@@ -29,7 +29,7 @@ public class Block {
 		this.y = y;
 	}
 	
-	public void drawSheape(Graphics g) {
+	public void drawShape(Graphics g) {
 		g.setColor(Color.blue);
 		g.fillRect(x, y, Block.WIDTH, Block.HEIGHT);
 	}

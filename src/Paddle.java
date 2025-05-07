@@ -44,5 +44,28 @@ public class Paddle {
 	public Rectangle getBound() {
 		return new Rectangle(x, y, Paddle.WIDTH, Paddle.HEIGHT);
 	}
-	
+
+	// 根據球與板子的碰撞位置調整反彈角度
+	public void handleCollision(Ball ball) {
+   	int ballCenter = ball.getX() + Ball.RADIUS;
+   	int paddleCenter = this.x + Paddle.WIDTH / 2;
+   	int offset = ballCenter - paddleCenter;
+   
+   	double maxAngle = Math.toRadians(60);
+   	double ratio = offset / (double)(Paddle.WIDTH / 2);
+   	double angle = ratio * maxAngle;
+   
+   	double speed = Math.sqrt(ball.getDx() * ball.getDx() + ball.getDy() * ball.getDy());
+   
+   	int newDx = (int)Math.round(speed * Math.sin(angle));
+   	int newDy = (int)Math.round(-speed * Math.cos(angle));
+   
+   	// 避免 dx = 0 導致垂直反彈
+   	if (newDx == 0) {
+   		newDx = (offset < 0) ? -1 : 1;
+   	}
+   
+   	ball.setDx(newDx);
+   	ball.setDy(newDy);
+   }
 }

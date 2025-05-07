@@ -62,12 +62,13 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 		blockIterator = blocks.iterator();
 		while (blockIterator.hasNext()) {
 			Block b = blockIterator.next();
-			b.drawSheape(myBuffer);
+			b.drawShape(myBuffer);  // 修正方法名稱
 		}
 
 		ball.drawShape(myBuffer);
 		paddle.drawShape(myBuffer);
 
+		// 檢查邊界碰撞
 		if (ball.getX() <= 0 || ball.getX() >= getWidth() - 2 * Ball.RADIUS) {
 			ball.setDx(ball.getDx() * -1);
 		}
@@ -75,17 +76,19 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 			ball.setDy(ball.getDy() * -1);
 		}
 
+		// 檢查板子碰撞
 		if (ball.getBound().intersects(paddle.getBound())) {
-			ball.setDy(ball.getDy() * -1);
+			paddle.handleCollision(ball);  // 根據碰撞位置調整反彈角度
 		}
 
-		// 修正後的球與磚塊碰撞邏輯
+		// 碰撞磚塊邏輯
 		blockIterator = blocks.iterator();
 		while (blockIterator.hasNext()) {
 			Block block = blockIterator.next();
 			if (block.getBound().intersects(ball.getBound())) {
-				blockIterator.remove();
+				blockIterator.remove(); // 刪除已碰撞的磚塊
 
+				// 確定從磚塊哪一邊反彈
 				Rectangle blockRect = block.getBound();
 				int ballPrevX = ball.getPrevX();
 				int ballPrevY = ball.getPrevY();
@@ -109,12 +112,14 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 			}
 		}
 
+		// 如果球落到螢幕底部，遊戲結束
 		if (ball.getY() >= getHeight()) {
 			timer.stop();
 			JOptionPane.showMessageDialog(this, "遊戲結束！");
 			System.exit(0);
 		}
 
+		// 如果所有磚塊消失，遊戲結束
 		if (blocks.isEmpty()) {
 			timer.stop();
 			JOptionPane.showMessageDialog(this, "pure recall");
@@ -136,4 +141,3 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 	@Override
 	public void mouseDragged(MouseEvent e) {}
 }
-
