@@ -6,6 +6,7 @@ public class Ball {
 
 	public static final int RADIUS = 20;
 	private int x, y, dx, dy;
+	private int prevX, prevY;
 
 	public Ball() {
 		this.x = 300;
@@ -14,41 +15,23 @@ public class Ball {
 		this.dy = -6;
 	}
 
-	public int getX() {
-		return x;
-	}
+	public int getX() { return x; }
+	public int getY() { return y; }
+	public int getDx() { return dx; }
+	public int getDy() { return dy; }
+	public int getPrevX() { return prevX; }
+	public int getPrevY() { return prevY; }
 
-	public int getY() {
-		return y;
-	}
-
-	public int getDx() {
-		return dx;
-	}
-
-	public int getDy() {
-		return dy;
-	}
-
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	public void setY(int y) {
-		this.y = y;
-	}
-
-	public void setDx(int dx) {
-		this.dx = dx;
-	}
-
-	public void setDy(int dy) {
-		this.dy = dy;
-	}
+	public void setX(int x) { this.x = x; }
+	public void setY(int y) { this.y = y; }
+	public void setDx(int dx) { this.dx = dx; }
+	public void setDy(int dy) { this.dy = dy; }
 
 	public void move() {
-		this.x += dx;
-		this.y += dy;
+		prevX = x;
+		prevY = y;
+		x += dx;
+		y += dy;
 	}
 
 	public void drawShape(Graphics g) {
