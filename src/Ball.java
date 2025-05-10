@@ -1,7 +1,4 @@
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -11,7 +8,7 @@ import javax.imageio.ImageIO;
 
 public class Ball {
 
-	public static final int RADIUS = 30;
+	public static final int RADIUS = 24;
 	private int x, y, dx, dy;
 	private int prevX, prevY;
 	private static Image[] imageFrames;
@@ -21,20 +18,19 @@ public class Ball {
 		this.x = 300;
 		this.y = 300;
 		this.dx = 3;
-		this.dy = -10;
+		this.dy = -6;
 	}
 
 	public static void loadImage() {
-		imageFrames = new Image[60];
-		BufferedImage origin = new BufferedImage(512, 512, BufferedImage.TYPE_INT_RGB);
-		for (int i = 0; i < 60; i++) {
-			try {
-				String fileName = String.format("%04d.png", i);
-				origin = ImageIO.read(Ball.class.getResource(fileName));
-				imageFrames[i] = origin.getScaledInstance(RADIUS * 2, RADIUS * 2, Image.SCALE_SMOOTH);
-			} catch (IOException e) {
-				e.printStackTrace();
+		imageFrames = new Image[94];
+		BufferedImage sprite;
+		try {
+			sprite = ImageIO.read(Ball.class.getResource("earth.png"));
+			for (int i = 0; i < 94; i++) {
+				imageFrames[i] = sprite.getSubimage(i % 10 * 48, i / 10 * 48, 48, 48);
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -91,7 +87,7 @@ public class Ball {
 	}
 
 	private void update() {
-		if (currentFrame < 59) {
+		if (currentFrame < 93) {
 			currentFrame++;
 		} else {
 			currentFrame = 0;
@@ -100,10 +96,7 @@ public class Ball {
 
 	private void render(Graphics g) {
 		g.drawImage(imageFrames[currentFrame], x, y, RADIUS * 2, RADIUS * 2, null);
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.setStroke(new BasicStroke(4));
-		g2d.setColor(Color.black);
-		g2d.drawOval(x, y, RADIUS * 2, RADIUS * 2);
+
 	}
 
 	public Rectangle getBound() {
