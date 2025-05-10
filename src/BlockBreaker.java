@@ -40,15 +40,15 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 		ball = new Ball();
 		paddle = new Paddle();
 		blocks = new ArrayList<Block>();
-		for (int i = 0; i < 8; i++) {
-			for (int j = 0; j < 10; j++) {
-				blocks.add(new Block((Block.WIDTH + 10) * j, (Block.HEIGHT + 10) * i));
+		int spacing = 15;
+		for (int i = 0; i < 6; i++) {
+			for (int j = 0; j < 9; j++) {
+				blocks.add(new Block(spacing + (Block.WIDTH + spacing) * j, (Block.HEIGHT + 10) * i));
 			}
 		}
-
+		loadImage();
 		timer = new Timer(10, this);
 		timer.start();
-		loadImage();
 	}
 
 	@Override
@@ -89,8 +89,10 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 		while (blockIterator.hasNext()) {
 			Block block = blockIterator.next();
 			if (block.getBound().intersects(ball.getBound())) {
-				blockIterator.remove(); // åˆªé™¤å·²ç¢°æ’žçš„ç£šå¡Š
-
+				block.hitted();
+				if(block.death()) {
+					blockIterator.remove(); // åˆªé™¤å·²ç¢°æ’žçš„ç£šå¡Š
+				}
 				// ç¢ºå®šå¾žç£šå¡Šå“ªä¸€é‚Šå��å½ˆ
 				Rectangle blockRect = block.getBound();
 				int ballPrevX = ball.getPrevX();
@@ -123,7 +125,7 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 		// å¦‚æžœæ‰€æœ‰ç£šå¡Šæ¶ˆå¤±ï¼Œé�Šæˆ²çµ�æ�Ÿ
 		if (blocks.isEmpty()) {
 			timer.stop();
-			JOptionPane.showMessageDialog(this, "pure recall");
+			JOptionPane.showMessageDialog(this, "full recall");
 			System.exit(0);
 		}
 
@@ -145,12 +147,14 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 
 	public void loadImage() {
 		Ball.loadImage();
+		for (Block block : blocks) {
+			block.loadImage();
+		}
 		background = new BufferedImage(Setting.PANEL_WIDTH, Setting.PANEL_HEIGHT, BufferedImage.TYPE_INT_RGB);
 		try {
 			background = ImageIO.read(getClass().getResource("/bg2.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 }
