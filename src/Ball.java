@@ -21,7 +21,7 @@ public class Ball {
 		this.x = 300;
 		this.y = 300;
 		this.dx = 3;
-		this.dy = -6;
+		this.dy = -10;
 	}
 
 	public static void loadImage() {

@@ -28,6 +28,7 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 	private Paddle paddle;
 	private List<Block> blocks;
 	private Iterator<Block> blockIterator;
+	private List<Explosion> explosions;
 	private BufferedImage background;
 
 	public BlockBreakerPanel() {
@@ -40,6 +41,8 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 		ball = new Ball();
 		paddle = new Paddle();
 		blocks = new ArrayList<Block>();
+		explosions = new ArrayList<Explosion>();
+		
 		int spacing = 15;
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 9; j++) {
@@ -47,7 +50,7 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 			}
 		}
 		loadImage();
-		timer = new Timer(10, this);
+		timer = new Timer(16, this);
 		timer.start();
 	}
 
@@ -70,7 +73,14 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 
 		ball.drawShape(myBuffer);
 		paddle.drawShape(myBuffer);
-
+		
+		for (Explosion explosion : explosions) {
+			explosion.render(myBuffer);
+			explosion.update();
+		}
+		
+		explosions.removeIf(Explosion::isFinished);
+		
 		// æª¢æŸ¥é‚Šç•Œç¢°æ’ž
 		if (ball.getX() <= 0 || ball.getX() >= getWidth() - 2 * Ball.RADIUS) {
 			ball.setDx(ball.getDx() * -1);
@@ -90,7 +100,8 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 			Block block = blockIterator.next();
 			if (block.getBound().intersects(ball.getBound())) {
 				block.hitted();
-				if(block.death()) {
+				if (block.death()) {
+					explosions.add(new Explosion(block.getX() + Block.WIDTH / 2, block.getY() + Block.HEIGHT / 2));
 					blockIterator.remove(); // åˆªé™¤å·²ç¢°æ’žçš„ç£šå¡Š
 				}
 				// ç¢ºå®šå¾žç£šå¡Šå“ªä¸€é‚Šå��å½ˆ
@@ -128,6 +139,7 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 			JOptionPane.showMessageDialog(this, "full recall");
 			System.exit(0);
 		}
+		
 
 		repaint();
 	}
