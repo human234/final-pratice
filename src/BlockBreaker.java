@@ -159,6 +159,7 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 
 	public void loadImage() {
 		Ball.loadImage();
+		Paddle.loadImage();
 		for (Block block : blocks) {
 			block.loadImage();
 		}

@@ -1,15 +1,30 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class Paddle {
 
 	private int x, y, dx;
 	public static final int WIDTH = 100, HEIGHT = 30;
-
+	private static Image image;
+	
+	public static void loadImage() {
+		try {
+			BufferedImage origin = ImageIO.read(Paddle.class.getResource("/block1.png"));
+			image = origin.getScaledInstance(WIDTH, HEIGHT, Image.SCALE_SMOOTH);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public Paddle() {
 		this.x = 350;
-		this.y = 585;
+		this.y = 570;
 	}
 
 	public int getX() {
@@ -37,8 +52,7 @@ public class Paddle {
 	}
 
 	public void drawShape(Graphics g) {
-		g.setColor(Color.gray);
-		g.fillRect(x, y, Paddle.WIDTH, Paddle.HEIGHT);
+		g.drawImage(image, x, y, WIDTH, HEIGHT, null);
 	}
 	
 	public Rectangle getBound() {
