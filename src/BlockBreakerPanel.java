@@ -101,9 +101,12 @@ public class BlockBreakerPanel extends JPanel implements ActionListener, MouseMo
 		// 邊界碰撞檢查
 		if (ball.getX() <= 0 || ball.getX() >= getWidth() - 2 * Ball.RADIUS) {
 			ball.setDx(ball.getDx() * -1);
+			SoundManager.playSoundEffect("resources/sound/hitwall.wav",-25f);
+
 		}
 		if (ball.getY() <= 0) {
 			ball.setDy(ball.getDy() * -1);
+			SoundManager.playSoundEffect("resources/sound/hitwall.wav",-25f);
 		}
 
 		// 擋板碰撞檢查
