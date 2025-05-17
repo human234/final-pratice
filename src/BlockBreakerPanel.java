@@ -1,25 +1,25 @@
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class BlockBreaker {
-	public static void main(String[] args) {
-		JFrame frame = new JFrame("Block Breaker");
-		frame.setLocation(100, 100);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setContentPane(new BlockBreakerPanel());
-		frame.pack();
-		frame.setVisible(true);
-	}
-}
+import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.Timer;
 
-class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionListener {
+/**
+ * BlockBreakerPanel 負責處理遊戲的畫面繪製與邏輯更新。
+ */
+public class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionListener {
 
 	private BufferedImage myImage;
 	private Graphics myBuffer;
@@ -31,6 +31,9 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 	private List<Explosion> explosions;
 	private BufferedImage background;
 
+	/**
+	 * 建構子：初始化遊戲元件與計時器。
+	 */
 	public BlockBreakerPanel() {
 		myImage = new BufferedImage(Setting.PANEL_WIDTH, Setting.PANEL_HEIGHT, BufferedImage.TYPE_INT_RGB);
 		myBuffer = myImage.getGraphics();
@@ -42,7 +45,7 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 		paddle = new Paddle();
 		blocks = new ArrayList<Block>();
 		explosions = new ArrayList<Explosion>();
-		
+
 		int spacing = 15;
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 9; j++) {
@@ -54,11 +57,19 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 		timer.start();
 	}
 
+	/**
+	 * Swing 繪圖方法，將緩衝影像畫出。
+	 */
 	@Override
 	protected void paintComponent(Graphics g) {
 		g.drawImage(myImage, 0, 0, Setting.PANEL_WIDTH, Setting.PANEL_HEIGHT, null);
 	}
 
+	/**
+	 * 每次計時器觸發時更新遊戲邏輯並重繪畫面。
+	 * 
+	 * @param e ActionEvent（未使用）
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		myBuffer.drawImage(background, 0, 0, Setting.PANEL_WIDTH, Setting.PANEL_HEIGHT, null);
@@ -68,20 +79,20 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 		blockIterator = blocks.iterator();
 		while (blockIterator.hasNext()) {
 			Block b = blockIterator.next();
-			b.drawShape(myBuffer); // ä¿®æ­£æ–¹æ³•å��ç¨±
+			b.drawShape(myBuffer);
 		}
 
 		ball.drawShape(myBuffer);
 		paddle.drawShape(myBuffer);
-		
+
 		for (Explosion explosion : explosions) {
 			explosion.render(myBuffer);
 			explosion.update();
 		}
-		
+
 		explosions.removeIf(Explosion::isFinished);
-		
-		// æª¢æŸ¥é‚Šç•Œç¢°æ’ž
+
+		// 邊界碰撞檢查
 		if (ball.getX() <= 0 || ball.getX() >= getWidth() - 2 * Ball.RADIUS) {
 			ball.setDx(ball.getDx() * -1);
 		}
@@ -89,12 +100,12 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 			ball.setDy(ball.getDy() * -1);
 		}
 
-		// æª¢æŸ¥æ�¿å­�ç¢°æ’ž
+		// 擋板碰撞檢查
 		if (ball.getBound().intersects(paddle.getBound())) {
-			paddle.handleCollision(ball); // æ ¹æ“šç¢°æ’žä½�ç½®èª¿æ•´å��å½ˆè§’åº¦
+			paddle.handleCollision(ball);
 		}
 
-		// ç¢°æ’žç£šå¡Šé‚�è¼¯
+		// 磚塊碰撞檢查
 		blockIterator = blocks.iterator();
 		while (blockIterator.hasNext()) {
 			Block block = blockIterator.next();
@@ -102,9 +113,9 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 				block.hitted();
 				if (block.death()) {
 					explosions.add(new Explosion(block.getX() + Block.WIDTH / 2, block.getY() + Block.HEIGHT / 2));
-					blockIterator.remove(); // åˆªé™¤å·²ç¢°æ’žçš„ç£šå¡Š
+					blockIterator.remove();
 				}
-				// ç¢ºå®šå¾žç£šå¡Šå“ªä¸€é‚Šå��å½ˆ
+
 				Rectangle blockRect = block.getBound();
 				int ballPrevX = ball.getPrevX();
 				int ballPrevY = ball.getPrevY();
@@ -122,28 +133,32 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 					ball.setDy(-ball.getDy());
 				}
 
-				break; // ä¸€æ¬¡å�ªæ¶ˆä¸€å€‹ç£šå¡Šï¼Œé�¿å…�é€£çºŒç¢°æ’žå•�é¡Œ
+				break; // 一次只消一個磚塊
 			}
 		}
 
-		// å¦‚æžœç�ƒè�½åˆ°èž¢å¹•åº•éƒ¨ï¼Œé�Šæˆ²çµ�æ�Ÿ
+		// 球掉到底部，遊戲失敗
 		if (ball.getY() >= Setting.PANEL_HEIGHT) {
 			timer.stop();
 			JOptionPane.showMessageDialog(this, "lost");
 			System.exit(0);
 		}
 
-		// å¦‚æžœæ‰€æœ‰ç£šå¡Šæ¶ˆå¤±ï¼Œé�Šæˆ²çµ�æ�Ÿ
+		// 所有磚塊消失，遊戲成功
 		if (blocks.isEmpty()) {
 			timer.stop();
 			JOptionPane.showMessageDialog(this, "full recall");
 			System.exit(0);
 		}
-		
 
 		repaint();
 	}
 
+	/**
+	 * 滑鼠移動事件：控制擋板的 X 座標。
+	 * 
+	 * @param e 滑鼠事件
+	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		paddle.setX(e.getX() - Paddle.WIDTH / 2);
@@ -153,10 +168,18 @@ class BlockBreakerPanel extends JPanel implements ActionListener, MouseMotionLis
 			paddle.setX(getWidth() - Paddle.WIDTH);
 	}
 
+	/**
+	 * 滑鼠拖曳事件（未使用）。
+	 * 
+	 * @param e 滑鼠事件
+	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {
 	}
 
+	/**
+	 * 載入遊戲圖像（球、擋板、磚塊與背景）。
+	 */
 	public void loadImage() {
 		Ball.loadImage();
 		Paddle.loadImage();
