@@ -3,7 +3,6 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 
 /**
@@ -34,15 +33,15 @@ public class Block {
 		BufferedImage origin = null;
 		try {
 			if (ref == 0) {
-				origin = ImageIO.read(getClass().getResource("/blue.png"));
+				origin = ImageIO.read(getClass().getResource("resources/blocks/blue.png"));
 			} else if (ref == 1) {
-				origin = ImageIO.read(getClass().getResource("/green.png"));
+				origin = ImageIO.read(getClass().getResource("resources/blocks/green.png"));
 			} else if (ref == 2) {
-				origin = ImageIO.read(getClass().getResource("/pink.png"));
+				origin = ImageIO.read(getClass().getResource("resources/blocks/pink.png"));
 			} else if (ref == 3) {
-				origin = ImageIO.read(getClass().getResource("/red.png"));
+				origin = ImageIO.read(getClass().getResource("resources/blocks/red.png"));
 			} else if (ref == 4) {
-				origin = ImageIO.read(getClass().getResource("/yellow.png"));
+				origin = ImageIO.read(getClass().getResource("resources/blocks/yellow.png"));
 			}
 			for (int i = 0; i < 4; i++) {
 				BufferedImage sub = origin.getSubimage(0, origin.getHeight() / 4 * i, origin.getWidth(), origin.getHeight() / 4);

@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -30,6 +29,8 @@ public class BlockBreakerPanel extends JPanel implements ActionListener, MouseMo
 	private Iterator<Block> blockIterator;
 	private List<Explosion> explosions;
 	private BufferedImage background;
+	private int blocksDestroyed = 0;
+	private int refreshInterval = 16;
 
 	/**
 	 * 建構子：初始化遊戲元件與計時器。
@@ -47,13 +48,14 @@ public class BlockBreakerPanel extends JPanel implements ActionListener, MouseMo
 		explosions = new ArrayList<Explosion>();
 
 		int spacing = 15;
+		int topOffset = 50; // 新增：讓磚塊下移 50px
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 9; j++) {
-				blocks.add(new Block(spacing + (Block.WIDTH + spacing) * j, (Block.HEIGHT + 10) * i));
+				blocks.add(new Block(spacing + (Block.WIDTH + spacing) * j, topOffset+(Block.HEIGHT + 10) * i));
 			}
 		}
 		loadImage();
-		timer = new Timer(16, this);
+		timer = new Timer(refreshInterval, this);
 		timer.start();
 	}
 
@@ -63,6 +65,10 @@ public class BlockBreakerPanel extends JPanel implements ActionListener, MouseMo
 	@Override
 	protected void paintComponent(Graphics g) {
 		g.drawImage(myImage, 0, 0, Setting.PANEL_WIDTH, Setting.PANEL_HEIGHT, null);
+		g.setColor(java.awt.Color.LIGHT_GRAY);
+    	g.setFont(new java.awt.Font("Microsoft JhengHei", java.awt.Font.BOLD, 22));
+    	g.drawString("score: " + blocksDestroyed, 20, 35);
+    	g.drawString("speed: " + (int)(1000.0 / refreshInterval) + " FPS", 200, 35);
 	}
 
 	/**
@@ -114,6 +120,12 @@ public class BlockBreakerPanel extends JPanel implements ActionListener, MouseMo
 				if (block.death()) {
 					explosions.add(new Explosion(block.getX() + Block.WIDTH / 2, block.getY() + Block.HEIGHT / 2));
 					blockIterator.remove();
+
+					blocksDestroyed++;
+					if (blocksDestroyed % 5 == 0 && refreshInterval > 4) { // 最快到4ms
+						refreshInterval -= 2; // 每5個磚塊加快一點
+						timer.setDelay(refreshInterval);
+					}
 				}
 
 				Rectangle blockRect = block.getBound();
@@ -188,7 +200,7 @@ public class BlockBreakerPanel extends JPanel implements ActionListener, MouseMo
 		}
 		background = new BufferedImage(Setting.PANEL_WIDTH, Setting.PANEL_HEIGHT, BufferedImage.TYPE_INT_RGB);
 		try {
-			background = ImageIO.read(getClass().getResource("/bg2.jpg"));
+			background = ImageIO.read(getClass().getResource("resources/bg2.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
