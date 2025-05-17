@@ -79,5 +79,7 @@ public class Paddle {
 
 		ball.setDx(newDx);
 		ball.setDy(newDy);
+		SoundManager.playSoundEffect("resources/sound/hitwithpaddle.wav", 0f); // +5dB 音量
+
 	}
 }

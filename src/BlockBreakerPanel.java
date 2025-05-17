@@ -152,14 +152,14 @@ public class BlockBreakerPanel extends JPanel implements ActionListener, MouseMo
 		// 球掉到底部，遊戲失敗
 		if (ball.getY() >= Setting.PANEL_HEIGHT) {
 			timer.stop();
-			JOptionPane.showMessageDialog(this, "lost");
+			JOptionPane.showMessageDialog(this, "game over!\nscore: " + blocksDestroyed);
 			System.exit(0);
 		}
 
 		// 所有磚塊消失，遊戲成功
 		if (blocks.isEmpty()) {
 			timer.stop();
-			JOptionPane.showMessageDialog(this, "full recall");
+			JOptionPane.showMessageDialog(this, "you win!\nscore: " + blocksDestroyed);
 			System.exit(0);
 		}
 
