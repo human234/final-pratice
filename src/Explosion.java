@@ -1,8 +1,8 @@
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import java.awt.geom.Point2D;
 
 /**
  * Explosion 類別負責在畫面上顯示爆炸動畫效果。
@@ -21,7 +21,7 @@ public class Explosion {
 	// 載入爆炸動畫的精靈圖
 	static {
 		try {
-			spriteSheet = ImageIO.read(Explosion.class.getResource("/explosion-5.png"));
+			spriteSheet = ImageIO.read(Explosion.class.getResource("resources/explosions/explosion-5.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

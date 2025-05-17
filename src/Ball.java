@@ -3,7 +3,6 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 
 /**
@@ -21,8 +20,8 @@ public class Ball {
 	 */
 	public Ball() {
 		this.x = 300;
-		this.y = 300;
-		this.dx = 3;
+		this.y = 500;
+		this.dx = 0;
 		this.dy = -6;
 	}
 
@@ -33,7 +32,7 @@ public class Ball {
 		imageFrames = new Image[94];
 		BufferedImage sprite;
 		try {
-			sprite = ImageIO.read(Ball.class.getResource("earth.png"));
+			sprite = ImageIO.read(Ball.class.getResource("resources/earth.png"));
 			for (int i = 0; i < 94; i++) {
 				imageFrames[i] = sprite.getSubimage(i % 10 * 48, i / 10 * 48, 48, 48);
 			}

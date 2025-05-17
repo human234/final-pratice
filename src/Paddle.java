@@ -3,7 +3,6 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 
 /**
@@ -19,7 +18,7 @@ public class Paddle {
 	 */
 	public static void loadImage() {
 		try {
-			BufferedImage origin = ImageIO.read(Paddle.class.getResource("/block1.png"));
+			BufferedImage origin = ImageIO.read(Paddle.class.getResource("resources/block1.png"));
 			image = origin.getScaledInstance(WIDTH, HEIGHT, Image.SCALE_SMOOTH);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -31,7 +30,7 @@ public class Paddle {
 	 */
 	public Paddle() {
 		this.x = 350;
-		this.y = 570;
+		this.y = 620;
 	}
 
 	public int getX() { return x; }

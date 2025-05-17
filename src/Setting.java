@@ -3,5 +3,5 @@
  */
 public class Setting {
 	public static final int PANEL_WIDTH = 800;
-	public static final int PANEL_HEIGHT = 600;
+	public static final int PANEL_HEIGHT = 650;
 }
