@@ -101,9 +101,12 @@ public class BlockBreakerPanel extends JPanel implements ActionListener, MouseMo
 		// 邊界碰撞檢查
 		if (ball.getX() <= 0 || ball.getX() >= getWidth() - 2 * Ball.RADIUS) {
 			ball.setDx(ball.getDx() * -1);
+			SoundManager.playSoundEffect("resources/sound/hitwall.wav",-25f);
+
 		}
 		if (ball.getY() <= 0) {
 			ball.setDy(ball.getDy() * -1);
+			SoundManager.playSoundEffect("resources/sound/hitwall.wav",-25f);
 		}
 
 		// 擋板碰撞檢查
@@ -152,14 +155,14 @@ public class BlockBreakerPanel extends JPanel implements ActionListener, MouseMo
 		// 球掉到底部，遊戲失敗
 		if (ball.getY() >= Setting.PANEL_HEIGHT) {
 			timer.stop();
-			JOptionPane.showMessageDialog(this, "lost");
+			JOptionPane.showMessageDialog(this, "game over!\nscore: " + blocksDestroyed);
 			System.exit(0);
 		}
 
 		// 所有磚塊消失，遊戲成功
 		if (blocks.isEmpty()) {
 			timer.stop();
-			JOptionPane.showMessageDialog(this, "full recall");
+			JOptionPane.showMessageDialog(this, "you win!\nscore: " + blocksDestroyed);
 			System.exit(0);
 		}
 

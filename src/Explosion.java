@@ -38,7 +38,7 @@ public class Explosion {
 		this.frames = new BufferedImage[TOTAL_FRAMES];
 		this.currentFrame = 0;
 		this.finished = false;
-
+		SoundManager.playSoundEffect("resources/sound/explosion.wav",-15f);
 		for (int i = 0; i < TOTAL_FRAMES; i++) {
 			frames[i] = spriteSheet.getSubimage(i * FRAME_SIZE, 0, FRAME_SIZE, FRAME_SIZE);
 		}
