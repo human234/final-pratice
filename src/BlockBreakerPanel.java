@@ -99,6 +99,37 @@ public class BlockBreakerPanel extends JPanel implements ActionListener, MouseMo
 
 		explosions.removeIf(Explosion::isFinished);
 
+		// 先處理擋板碰撞
+		// 先判斷球是否從上方撞到板子
+		if (ball.getBound().intersects(paddle.getBound())) {
+			Rectangle paddleRect = paddle.getBound();
+			int ballPrevX = ball.getPrevX();
+			int ballPrevY = ball.getPrevY();
+
+			boolean fromLeftOrRight = ballPrevX + Ball.RADIUS * 2 <= paddleRect.x
+					|| ballPrevX >= paddleRect.x + paddleRect.width;
+			boolean fromTopOrBottom = ballPrevY + Ball.RADIUS * 2 <= paddleRect.y
+					|| ballPrevY >= paddleRect.y + paddleRect.height;
+
+			if (fromTopOrBottom) {
+				paddle.handleCollision(ball); // 依照落點改變反彈角度與速度
+				ball.setY(paddle.getY() - Ball.RADIUS * 2 - 1); // 修正位置避免陷入
+			} else if (fromLeftOrRight) {
+				ball.setDx(-ball.getDx());
+				ball.setDy(-Math.abs(ball.getDy())); // 強制向上彈起，避免往下卡住
+
+				// 修正x座標，避免卡在邊界
+				if (ball.getX() < paddleRect.x) {
+					ball.setX(paddleRect.x - Ball.RADIUS * 2 - 1);
+				} else {
+					ball.setX(paddleRect.x + paddleRect.width + 1);
+				}
+			}
+			SoundManager.playSoundEffect("resources/sound/hitwithpaddle.wav", -10f); // +5dB 音量
+
+		}
+
+
 		// 邊界碰撞檢查
 		if (ball.getX() <= 0 || ball.getX() >= getWidth() - 2 * Ball.RADIUS) {
 			ball.setDx(ball.getDx() * -1);
@@ -108,11 +139,6 @@ public class BlockBreakerPanel extends JPanel implements ActionListener, MouseMo
 		if (ball.getY() <= 0) {
 			ball.setDy(ball.getDy() * -1);
 			SoundManager.playSoundEffect("resources/sound/hitwall.wav",-25f);
-		}
-
-		// 擋板碰撞檢查
-		if (ball.getBound().intersects(paddle.getBound())) {
-			paddle.handleCollision(ball);
 		}
 
 		// 磚塊碰撞檢查
@@ -163,8 +189,10 @@ public class BlockBreakerPanel extends JPanel implements ActionListener, MouseMo
 		}
 
 		// 所有磚塊消失，遊戲成功
-		if (blocks.isEmpty()) {
+		if (blocks.isEmpty() && explosions.isEmpty()) {
 			timer.stop();
+			SoundManager.stopBackgroundMusic();
+			SoundManager.playSoundEffect("resources/sound/win.wav",-5f);
 			JOptionPane.showMessageDialog(this, "you win!\nscore: " + blocksDestroyed);
 			System.exit(0);
 		}

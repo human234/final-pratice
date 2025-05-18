@@ -76,10 +76,13 @@ public class Paddle {
 		if (newDx == 0) {
 			newDx = (offset < 0) ? -1 : 1;
 		}
+		// 修正 dy 避免太小（橫移卡住）
+		if (Math.abs(newDy) < 2) {
+			newDy = -2; // 保證向上彈，避免停在板子上
+		}
 
 		ball.setDx(newDx);
 		ball.setDy(newDy);
-		SoundManager.playSoundEffect("resources/sound/hitwithpaddle.wav", -10f); // +5dB 音量
 
 	}
 }
