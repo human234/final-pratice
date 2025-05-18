@@ -49,7 +49,7 @@ public class BlockBreakerPanel extends JPanel implements ActionListener, MouseMo
 
 		int spacing = 15;
 		int topOffset = 50; // 新增：讓磚塊下移 50px
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 9; j++) {
 				blocks.add(new Block(spacing + (Block.WIDTH + spacing) * j, topOffset+(Block.HEIGHT + 10) * i));
 			}
@@ -57,6 +57,7 @@ public class BlockBreakerPanel extends JPanel implements ActionListener, MouseMo
 		loadImage();
 		timer = new Timer(refreshInterval, this);
 		timer.start();
+		SoundManager.playBackgroundMusic("resources/sound/bgm.wav", -15f);
 	}
 
 	/**
@@ -125,8 +126,8 @@ public class BlockBreakerPanel extends JPanel implements ActionListener, MouseMo
 					blockIterator.remove();
 
 					blocksDestroyed++;
-					if (blocksDestroyed % 5 == 0 && refreshInterval > 4) { // 最快到4ms
-						refreshInterval -= 2; // 每5個磚塊加快一點
+					if (blocksDestroyed % 7 == 0 && refreshInterval > 4) { // 最快到4ms
+						refreshInterval -= 2; // 每7個磚塊加快一點
 						timer.setDelay(refreshInterval);
 					}
 				}
@@ -155,6 +156,8 @@ public class BlockBreakerPanel extends JPanel implements ActionListener, MouseMo
 		// 球掉到底部，遊戲失敗
 		if (ball.getY() >= Setting.PANEL_HEIGHT) {
 			timer.stop();
+			SoundManager.stopBackgroundMusic();
+			SoundManager.playSoundEffect("resources/sound/gameover.wav",-5f);
 			JOptionPane.showMessageDialog(this, "game over!\nscore: " + blocksDestroyed);
 			System.exit(0);
 		}

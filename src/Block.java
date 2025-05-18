@@ -69,7 +69,7 @@ public class Block {
 	 */
 	public void hitted() {
 		hitCount++;
-		SoundManager.playSoundEffect("resources/sound/hitwithbrick.wav",-20f);
+		SoundManager.playSoundEffect("resources/sound/hitwithbrick.wav",-15f);
 	}
 
 	/**
