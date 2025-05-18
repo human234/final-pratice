@@ -1,7 +1,7 @@
-# BlockBreaker
+# BrickBreaker
 
 ## 簡介
-實作遠古小遊戲 BlockBreaker。
+實作遠古小遊戲 BrickBreaker。
 
 ## 組員資訊
 - 李家興 B11207016  
